@@ -32,7 +32,7 @@ const Navbar = () => {
       <div className="hidden sm:flex items-center gap-8">
         <Link to="/">Home</Link>
         <Link to="/feedback">Feedback</Link>
-        <Link to="/history" onClick={() => setOpen(false)}>History</Link>
+        <Link to="/history">History</Link>
 
 
         {user ? (
