@@ -32,7 +32,7 @@ export default function Home() {
     };
 
     fetchHistory();
-  },[]);
+  },[user,navigate,showUserLogin]);
 
   const handleFeedback = (aiFeedback) => {
     const newEntry = { user: feedbacks.length + 1, ai: aiFeedback };

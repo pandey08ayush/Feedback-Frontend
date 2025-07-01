@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+
 const Auth = () => {
   const [state, setState] = useState("login");
   const [name, setName] = useState("");
@@ -10,13 +11,14 @@ const Auth = () => {
   const { setShowUserLogin, setUser, axios, navigate } = useAppContext();
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
       const { data } = await axios.post(`/api/user/${state}`, {
         name,
         email,
         password,
       });
+
       if (data.success) {
         toast.success(data.message);
         navigate("/");
@@ -25,12 +27,22 @@ const Auth = () => {
       } else {
         toast.error(data.message);
       }
-    } catch (error) {}
+    } catch (error) {
+      const errMsg = error?.response?.data?.message || "Something went wrong!";
+      if (errMsg === "User does not exist") {
+        toast.error("Please register first.");
+      } else if (errMsg === "Invalid credentials") {
+        toast.error("Incorrect email or password.");
+      } else {
+        toast.error(errMsg);
+      }
+    }
   };
+
   return (
     <div
       onClick={() => setShowUserLogin(false)}
-      className="fixed top-0 left-0 bottom-0 right-0 z-30 flex items-center justify-center  bg-black/50 text-gray-600"
+      className="fixed top-0 left-0 bottom-0 right-0 z-30 flex items-center justify-center bg-black/50 text-gray-600"
     >
       <form
         onSubmit={handleSubmit}
@@ -41,9 +53,10 @@ const Auth = () => {
           <span className="text-indigo-500">User</span>{" "}
           {state === "login" ? "Login" : "Register"}
         </p>
+
         {state === "register" && (
           <div className="w-full">
-            <p>Name</p>  
+            <p>Name</p>
             <input
               onChange={(e) => setName(e.target.value)}
               value={name}
@@ -54,7 +67,8 @@ const Auth = () => {
             />
           </div>
         )}
-        <div className="w-full ">
+
+        <div className="w-full">
           <p>Email</p>
           <input
             onChange={(e) => setEmail(e.target.value)}
@@ -65,7 +79,8 @@ const Auth = () => {
             required
           />
         </div>
-        <div className="w-full ">
+
+        <div className="w-full">
           <p>Password</p>
           <input
             onChange={(e) => setPassword(e.target.value)}
@@ -76,6 +91,7 @@ const Auth = () => {
             required
           />
         </div>
+
         {state === "register" ? (
           <p>
             Already have account?{" "}
@@ -87,7 +103,6 @@ const Auth = () => {
             </span>
           </p>
         ) : (
-          <>
           <p>
             Create an account?{" "}
             <span
@@ -97,14 +112,14 @@ const Auth = () => {
               click here
             </span>
           </p>
-          </>
         )}
+
         <button className="bg-indigo-500 hover:bg-indigo-600 transition-all text-white w-full py-2 rounded-md cursor-pointer">
           {state === "register" ? "Create Account" : "Login"}
-
         </button>
       </form>
     </div>
   );
 };
+
 export default Auth;
