@@ -72,6 +72,8 @@ const Navbar = () => {
       >
         <Link to="/" onClick={() => setOpen(false)}>Home</Link>
         <Link to="/feedback" onClick={() => setOpen(false)}>Feedback</Link>
+        <Link to="/history" onClick={() => setOpen(false)}>History</Link>
+
 
         {user ? (
           <button
