@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 
@@ -6,12 +6,18 @@ export default function FeedbackForm({ onFeedback }) {
   const [text, setText] = useState("");
   const { user, axios, setShowUserLogin } = useAppContext();
 
+  useEffect(() => {
+    if (typeof onFeedback !== "function") {
+      console.warn("⚠️ [FeedbackForm] onFeedback prop is not a function:", onFeedback);
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!user) {
       toast.error("Please login first to submit feedback.");
-      setShowUserLogin(true); // open login modal
+      setShowUserLogin(true);
       return;
     }
 
@@ -26,7 +32,13 @@ export default function FeedbackForm({ onFeedback }) {
 
       if (data.success && data.submission?.feedback) {
         console.log("AI Feedback:", data.submission.feedback);
-        onFeedback(data.submission.feedback);
+
+        if (typeof onFeedback === "function") {
+          onFeedback(data.submission.feedback);
+        } else {
+          console.warn("⚠️ onFeedback not a function:", onFeedback);
+        }
+
         setText("");
       } else {
         toast.error(data.message || "Failed to submit feedback.");

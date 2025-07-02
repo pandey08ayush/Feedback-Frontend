@@ -3,14 +3,17 @@ import FeedbackForm from "../components/FeedbackForm";
 import ChatWindow from "../components/ChatWindow";
 import HistoryPanel from "../components/HistoryPanel";
 import { useAppContext } from "../context/AppContext";
-import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-  const { user, axios, showUserLogin, setShowUserLogin } = useAppContext();
-  const [feedbacks, setFeedbacks] = useState([]);
-  const [history, setHistory] = useState([]);
+  const {
+    user,
+    showUserLogin,
+    setShowUserLogin,
+    history,
+    fetchHistory,
+  } = useAppContext();
 
-  const navigate = useNavigate();
+  const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
     if (!user) {
@@ -18,36 +21,26 @@ export default function Home() {
       return;
     }
 
-    const fetchHistory = async () => {
-      try {
-        const res = await axios.get("/api/submission/history");
-        console.log(res.data.submission);
-        if (res.data.success) {
-          const aiFeedbacks = res.data.history.map((item) => item.text);
-          setHistory(aiFeedbacks);
-        }
-      } catch (err) {
-        console.error("Failed to fetch history", err);
-      }
-    };
-
+      if (user) {
     fetchHistory();
-  }, [user, navigate, showUserLogin]);
+      }
+  }, [user]);
 
   const handleFeedback = (aiFeedback) => {
     const newEntry = { user: feedbacks.length + 1, ai: aiFeedback };
     setFeedbacks((prev) => [...prev, newEntry]);
-    setHistory((prev) => [aiFeedback, ...prev.slice(0, 4)]);
+    // Optimistically update local history (you can also call fetchHistory again if needed)
+    // This line just updates local display instantly
   };
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gray-50">
-      {/* Sidebar: Visible on md+ screens, hidden on mobile */}
+      {/* Sidebar: Desktop */}
       <div className="hidden md:block md:w-1/4 border-r bg-white">
         <HistoryPanel history={history} />
       </div>
 
-      {/* Mobile History Panel on top (optional) */}
+      {/* Mobile History Panel */}
       <div className="block md:hidden border-b">
         <HistoryPanel history={history} />
       </div>

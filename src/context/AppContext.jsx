@@ -13,11 +13,12 @@ export const AppContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [showUserLogin, setShowUserLogin] = useState(false);
+  const [history, setHistory] = useState([]);
 
   // ✅ Fetch user when app loads (used in Home, Navbar etc.)
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("/api/user/is-auth");
+      const { data } = await axios.get("/api/user/is-auth", { withCredentials: true });
       if (data.success) {
         setUser(data.user);
       } else {
@@ -29,6 +30,21 @@ export const AppContextProvider = ({ children }) => {
       console.log("Auth Error:", error.message);
     }
   };
+
+  // fetch history
+ const fetchHistory = async () => {
+      try {
+        const res = await axios.get("/api/submission/history", { withCredentials: true });
+        console.log(res.data.history);
+        if (res.data.success) {
+          const aiFeedbacks = res.data.history.map((item) => item.text);
+          setHistory(aiFeedbacks);
+        }
+      } catch (err) {
+        console.error("Failed to fetch history", err);
+      }
+    };
+
 
   useEffect(() => {
     fetchUser();
@@ -42,7 +58,9 @@ export const AppContextProvider = ({ children }) => {
     showUserLogin,
     setShowUserLogin,
     axios,
+    history,   
     fetchUser, // export it in case we want to refetch user after login
+    fetchHistory
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

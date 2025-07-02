@@ -1,6 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
-import Feedback from "./components/FeedbackForm";
+import FeedbackForm from "./components/FeedbackForm";
+// import HistoryPage from "./components/HistoryPage"
+import FeedbackPage from "./components/FeedbackPage";
 import HistoryPanel from "./components/HistoryPanel";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
@@ -22,7 +24,7 @@ const App = () => {
           path="/feedback"
           element={
             <div className="px-6 md:px-16 lg:px-24 xl:px-32">
-              <Feedback />
+              <FeedbackPage />
             </div>
           }
         />
