@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Feedback from "./components/FeedbackForm";
-import History from "./components/HistoryPanel";
+import HistoryPanel from "./components/HistoryPanel";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
 import Auth from "./modals/Auth";
@@ -30,7 +30,7 @@ const App = () => {
           path="/history"
           element={
             <div className="px-6 md:px-16 lg:px-24 xl:px-32">
-              <History />
+              <HistoryPanel />
             </div>
           }
         />
