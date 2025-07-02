@@ -31,6 +31,8 @@ export default function Home() {
     setFeedbacks((prev) => [...prev, newEntry]);
     // Optimistically update local history (you can also call fetchHistory again if needed)
     // This line just updates local display instantly
+
+      fetchHistory();
   };
 
   return (
